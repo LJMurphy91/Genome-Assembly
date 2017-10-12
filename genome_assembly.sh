@@ -65,7 +65,7 @@ for zippedvcf in *bkup.vcf; do outfile=${zippedvcf//_bkup.vcf/_variants.txt}; be
 
 #8. GENOME ASSEMBLY USING SPADES
 
-for inputfile1 in <*1.fq>; do inputfile2=${inputfile1//1/2}; outdir=spades/; python spades.py -t <no. threads. --careful --only_assembler -1 $inputfile1 -2 $inputfile2 -o $outdir; done
+for inputfile1 in <*1.fq>; do inputfile2=${inputfile1//1/2}; outdir=${inputfile1//\_1.fq/}; python spades.py -t <no. threads. --careful --only_assembler -1 $inputfile1 -2 $inputfile2 -o $outdir; done
 
 ########################################################################################
 
@@ -73,6 +73,11 @@ for inputfile1 in <*1.fq>; do inputfile2=${inputfile1//1/2}; outdir=spades/; pyt
 
 for assemblies in *spades/contigs.fasta; do python ~/quast.py -o / -R <reference.fna> -G <reference.gff> $assemblies; done
 
+########################################################################################
+
+#10. GENOME ANNOTATION USING PROKKA
+
+for folders in */; do cd $folders; prokka --locustag $i --genus GENUS --species SPECIES --strain $folders --gcode 11 --outdir prokka_$folders --usegenus contigs.fasta --force --cpus NUM; done
 
 
 
